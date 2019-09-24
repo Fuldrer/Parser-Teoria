@@ -7,7 +7,7 @@ void Parser::prog(){
 }
 
 void Parser::optional_func_dec(){
-    std::cout << "Optional_func_decl() -> " ;
+    std::cout << "Optional_func_decl() -> ";
     func_head();
     body();
     if(token == Token::STATIC_TKN)
@@ -17,17 +17,19 @@ void Parser::optional_func_dec(){
 }
 
 void Parser::func_head(){
-    std::cout << "Func_head() -> " ;
+    std::cout << "Func_head() -> ";
     func_name();
-    param_list();
+    std::cout<<"Sale de Func name"<<std::endl;
+    std::cout<<lexer.getText()<< std::endl;
+    param_list_opt();
 }
 
 void Parser::func_name(){
-    std::cout << "Func_name() -> " ;
+    std::cout << "Func_name() -> ";
     func_type();
     if(token == Token::ID){
-        std::cout << "\n | ID" ;
-        token = lexer.getNextToken();
+        //token = lexer.getNextToken();
+        std::cout << "\n | ID " << std::endl;
     }
     else
         throw "Se esperaba token ID pero se encontro: " + lexer.getText();
@@ -35,13 +37,13 @@ void Parser::func_name(){
 }
 
 void Parser::func_type(){
-    std::cout << "Func_type() -> " ;
+    std::cout << "Func_type() -> ";
     func_modifiers();
     decl_type();
 }
 
 void Parser::func_modifiers(){
-    std::cout << "func_modifiers() -> " ;
+    std::cout << "func_modifiers() -> ";
     if(token == Token::STATIC_TKN)
     {
         func_mods();
@@ -51,48 +53,60 @@ void Parser::func_modifiers(){
 }
 
 void Parser::func_mods(){
-    std::cout << "Func_mods() -> " ;
+    std::cout << "Func_mods() -> ";
     if(token == Token::STATIC_TKN){
         token = lexer.getNextToken();
-        std::cout<<"\n | STATIC_TKN"<<std::endl;
+        std::cout<<"\n | STATIC_TKN"<< std::endl;
     }
 }
 
 void Parser::decl_type(){
-    std::cout << "Decl_type() -> " ;
+    std::cout << "Decl_type() -> ";
     if(token == Token::INT_TYPE){
         token = lexer.getNextToken();
-        std::cout<<"| INT_TYPE"<<std::endl;
+        std::cout<<"| INT_TYPE"<< std::endl;
     }
     else if(token == Token::ANYTYPE_TYPE){
         token = lexer.getNextToken();
-        std::cout<<"| ANYTYPE_TYPE"<<std::endl;
+        std::cout<<"| ANYTYPE_TYPE"<< std::endl;
     }
     else if(token == Token::BOOLEAN_TYPE){
         token = lexer.getNextToken();
-        std::cout<<"| BOOLEAN_TYPE"<<std::endl;
+        std::cout<<"| BOOLEAN_TYPE"<< std::endl;
     }
     else if(token ==  Token::VOID_TYPE){
         token = lexer.getNextToken();
-        std::cout<<"| VOID_TYPE"<<std::endl;
+        std::cout<<"| VOID_TYPE"<< std::endl;
     }
     else if(token == Token::REAL_TYPE){
         token = lexer.getNextToken();
-        std::cout<<"| REAL_TYPE"<<std::endl;
+        std::cout<<"| REAL_TYPE"<< std::endl;
     }
     else if(token == Token::STRING_TYPE){
         token = lexer.getNextToken();
-        std::cout<<"| STRING_TYPE"<<std::endl;
+        std::cout<<"| STRING_TYPE"<< std::endl;
     }
     else if(token == Token::DATE_TYPE){
         token = lexer.getNextToken();
-        std::cout<<"| DATE_TYPE"<<std::endl;
+        std::cout<<"| DATE_TYPE"<< std::endl;
     }
 }
 
 void Parser::param_list_opt(){
-    std::cout << "Param_list_opt() -> " ;
-    param_list();
+    std::cout << "Param_list_opt() -> ";
+    if(token == Token::INT_TYPE || token == Token::ANYTYPE_TYPE || token == Token::BOOLEAN_TYPE
+     || token ==  Token::VOID_TYPE || token == Token::REAL_TYPE || token == Token::STRING_TYPE || 
+      token == Token::DATE_TYPE ){
+        std::cout << "\n | Llega a param" ;
+        param_list();
+
+    }
+    else{
+        std::cout<<"Llega al vacio de param";
+        /*Nothing to do here*/
+    }
+    /*std::cout << "Param_list_opt() -> " ;
+    param_list();*/
 }
 
 void Parser::param_list(){
@@ -114,6 +128,7 @@ void Parser::param_list_p(){
 void Parser::decl_param(){
     std::cout << "Decl_param() -> " ;
     decl_type();
+    std::cout << "\n | Llega aqui" ;
     if(token == Token::ID){
         std::cout << "\n | ID" ;
         token = lexer.getNextToken();
@@ -124,6 +139,8 @@ void Parser::decl_param(){
 
 void Parser::body(){
     std::cout << "Body() -> " ;
+    std::cout<<"llega a body";
+    //token = lexer.getNextToken();
     if (token == Token::BRACES_OP)
     {
         token = lexer.getNextToken();
@@ -230,6 +247,7 @@ void Parser::if_conds(){
 }
 
 void Parser::if_cond(){
+    std::cout << "cond() -> " ;
     if(token == Token::IF)
     {
         token = lexer.getNextToken();
@@ -267,6 +285,7 @@ void Parser::expr_stmt(){
 }
 
 void Parser::asg_stmt(){
+    std::cout << "asg_stmt() -> " ;
     if(token == Token::ID){
         token = lexer.getNextToken();
         if (token == Token::ASIG){
@@ -285,10 +304,11 @@ void Parser::asg_stmt(){
 }
 
 void Parser::return_stmt(){
+    std::cout << "return_stmt() -> " ;
     if(token == Token::RETURN){
         token = lexer.getNextToken();
         if(token == Token::SEMICOLON){
-
+            token = lexer.getNextToken();
         }
         else{
             bool_expr();
@@ -301,22 +321,52 @@ void Parser::return_stmt(){
 }
 
 void Parser::bool_expr(){
-
+    std::cout << "bool_expr() -> " ;
+    token = lexer.getNextToken();
 }
 
 void Parser::expr(){
-
+    std::cout << "Expr->" ;
+    simple_expr();
+    if(token == Token::REL_OP){
+        token = lexer.getNextToken();
+        simple_expr();
+    }
+    else{
+        token == lexer.getNextToken();
+    }
 }
 
 void Parser::simple_expr(){
-
+    std::cout << "simple_expr() -> " ;
+    simple_expr();
+    token = lexer.getNextToken();
+    if(token == Token::ADD_OP){
+        token = lexer.getNextToken();
+        term();
+    }
+    else{
+        term();
+    }
 }
 
 void Parser::term(){
-
+    std::cout << "term() -> " ;
+    Token token2;
+    token2 = lexer.getNextToken();
+    if(token2 == Token::MULT_OP){
+        term();
+        token = token2;
+        factor();
+    }
+    else{
+        factor();
+        token = lexer.getNextToken();
+    }
 }
 
 void Parser::factor(){
+    std::cout << "Factor";
     if(token == Token::PAR_OP){
         token = lexer.getNextToken();
         bool_expr();

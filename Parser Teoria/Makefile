@@ -11,7 +11,7 @@ $(TARGET): $(OBJ_FILES)
 	g++ -std=c++14 -g -c -o $@ $<
 
 run: $(TARGET)
-	./$(TARGET) example1.lpp
+	./$(TARGET) input.g4
 
 clean:
 	rm -f *.o
